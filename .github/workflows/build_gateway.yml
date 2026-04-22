@@ -19,7 +19,8 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        # Тут мы явно говорим Gradle использовать JDK_11, который мы установили выше
+        run: ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
