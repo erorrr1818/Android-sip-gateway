@@ -74,22 +74,29 @@ public class SipEndpointManager {
      * This is critical before creating accounts - PJSIP will crash if account is created without transport.
      */
     public boolean hasTransport() {
-        if (endpoint == null) {
-            return false;
-        }
-        try {
-            // Use transportEnum() to get list of transport IDs
-            IntVector transports = endpoint.transportEnum();
-            boolean hasTransports = transports != null && transports.size() > 0;
-            if (transports != null) {
-                transports.delete();
-            }
-            return hasTransports;
-        } catch (Exception e) {
-            Log.w(TAG, "Error checking transport: " + e.getMessage());
-            return false;
-        }
+    if (endpoint == null) {
+        return false;
     }
+
+    // IMPORTANT:
+    // transportEnum() is a PJSIP call, so the current thread must be registered first.
+    if (!registerThread("SipEndpointManager.hasTransport")) {
+        Log.w(TAG, "Thread registration failed before hasTransport()");
+        return false;
+    }
+
+    try {
+        IntVector transports = endpoint.transportEnum();
+        boolean hasTransports = transports != null && transports.size() > 0;
+        if (transports != null) {
+            transports.delete();
+        }
+        return hasTransports;
+    } catch (Exception e) {
+        Log.w(TAG, "Error checking transport: " + e.getMessage(), e);
+        return false;
+    }
+}
 
     /**
      * Check if TLS setting changed and endpoint needs recreation.
@@ -128,24 +135,30 @@ public class SipEndpointManager {
 
         // Check if endpoint already exists
         if (endpoint != null) {
-            if (endpointUseTls != useTls) {
-                // TLS changed - cannot safely recreate endpoint, must restart process
-                Log.e(TAG, "TLS setting changed (" + endpointUseTls + " -> " + useTls + "), process restart required");
-                throw new TlsChangedException(endpointUseTls, useTls);
-            } else {
-                Log.d(TAG, "Reusing existing endpoint");
+    if (endpointUseTls != useTls) {
+        // TLS changed - cannot safely recreate endpoint, must restart process
+        Log.e(TAG, "TLS setting changed (" + endpointUseTls + " -> " + useTls + "), process restart required");
+        throw new TlsChangedException(endpointUseTls, useTls);
+    } else {
+        Log.d(TAG, "Reusing existing endpoint");
 
-                // CRITICAL: Check if transport exists when reusing endpoint
-                // If transport is missing (e.g. after previous creation failure), recreate it
-                if (!hasTransport()) {
-                    Log.w(TAG, "Endpoint exists but has no transport - recreating transport");
-                    createTransport(useTls);
-                    Log.d(TAG, "Transport recreated successfully");
-                }
-
-                return;
-            }
+        // Reused endpoint may be accessed from an external thread.
+        // Ensure the current thread is registered before any PJSIP calls.
+        if (!registerThread("SipEndpointManager.createEndpoint")) {
+            Log.w(TAG, "Could not register thread while reusing endpoint");
         }
+
+        // CRITICAL: Check if transport exists when reusing endpoint
+        // If transport is missing (e.g. after previous creation failure), recreate it
+        if (!hasTransport()) {
+            Log.w(TAG, "Endpoint exists but has no transport - recreating transport");
+            createTransport(useTls);
+            Log.d(TAG, "Transport recreated successfully");
+        }
+
+        return;
+    }
+}
 
         Log.d(TAG, "Creating new PJSIP endpoint (TLS=" + useTls + ")");
 
@@ -316,20 +329,25 @@ public class SipEndpointManager {
      * @return true if registration succeeded, false otherwise
      */
     public boolean registerThread(String threadName) {
-        if (endpoint == null) {
-            Log.w(TAG, "Cannot register thread '" + threadName + "', endpoint is null");
-            return false;
+    if (endpoint == null) {
+        Log.w(TAG, "Cannot register thread '" + threadName + "', endpoint is null");
+        return false;
+    }
+
+    try {
+        if (endpoint.libIsThreadRegistered()) {
+            Log.d(TAG, "Thread already registered: " + Thread.currentThread().getName());
+            return true;
         }
 
-        try {
-            endpoint.libRegisterThread(threadName);
-            Log.d(TAG, "Thread registered: " + threadName);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to register thread '" + threadName + "': " + e.getMessage());
-            return false;
-        }
+        endpoint.libRegisterThread(threadName);
+        Log.d(TAG, "Thread registered: " + threadName);
+        return true;
+    } catch (Exception e) {
+        Log.e(TAG, "Failed to register thread '" + threadName + "': " + e.getMessage(), e);
+        return false;
     }
+}
 
     /**
      * Shutdown the endpoint (but keep it alive for reuse).
