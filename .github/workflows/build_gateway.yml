@@ -13,14 +13,22 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+
+      - name: Fix Invalid Java Home
+        run: |
+          # Удаляем локальные настройки автора, которые ломают нам путь к Java
+          rm -f gradle.properties
+          # Создаем чистый файл настроек
+          echo "org.gradle.jvmargs=-Xmx2048m" > gradle.properties
+          # Принудительно очищаем переменную, если она тянет мусор
+          unset JAVA_HOME
+          export JAVA_HOME=$JAVA_HOME_17_X64
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        # Собираем с Java 17, без лишних флагов, которые мешали в первый раз
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
