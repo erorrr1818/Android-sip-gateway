@@ -14,23 +14,23 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Fix Invalid Java Home
+      - name: Fix and Clean Build
         run: |
-          # Удаляем локальные настройки автора, которые ломают нам путь к Java
+          # Удаляем старые настройки
           rm -f gradle.properties
-          # Создаем чистый файл настроек
-          echo "org.gradle.jvmargs=-Xmx2048m" > gradle.properties
-          # Принудительно очищаем переменную, если она тянет мусор
-          unset JAVA_HOME
-          export JAVA_HOME=$JAVA_HOME_17_X64
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+          # Создаем новые настройки, чтобы сборка не падала из-за нехватки памяти
+          echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
+          echo "android.useAndroidX=true" >> gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+          chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        # Добавляем флаг --stacktrace, чтобы если упадет, мы видели точную причину
+        # И флаг --refresh-dependencies, чтобы перекачать битые файлы
+        run: ./gradlew assembleDebug --stacktrace --refresh-dependencies
 
       - name: Upload APK
+        if: always() # Загрузить даже если билд упадет наполовину, вдруг файл успел создаться
         uses: actions/upload-artifact@v4
         with:
           name: SIP-Gateway-Debug
