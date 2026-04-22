@@ -8,10 +8,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: set up JDK 11
+      - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
           cache: gradle
 
@@ -19,8 +19,8 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        # Тут мы явно говорим Gradle использовать JDK_11, который мы установили выше
-        run: ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
+        # Собираем с Java 17, без лишних флагов, которые мешали в первый раз
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
