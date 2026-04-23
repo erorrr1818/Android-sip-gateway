@@ -1,0 +1,98 @@
+version: '3.8'
+
+# ================================================================
+# Docker Compose для GSM-SIP Gateway сервера
+# Адаптировано для MI 8 Dipper + LineageOS 22.2
+# ================================================================
+# Запуск: docker compose up -d
+# Логи:   docker compose logs -f asterisk
+# CLI:    docker exec -it asterisk asterisk -rvvvvv
+# ================================================================
+
+services:
+  
+  # ─── Asterisk PBX ───────────────────────────────────────────
+  asterisk:
+    image: andrius/asterisk:latest
+    container_name: gsm-sip-asterisk
+    restart: unless-stopped
+    network_mode: host   # важно для NAT traversal
+    privileged: false
+    
+    volumes:
+      # Конфиги Asterisk
+      - ./asterisk-etc/pjsip.conf:/etc/asterisk/pjsip.conf:ro
+      - ./asterisk-etc/extensions.conf:/etc/asterisk/extensions.conf:ro
+      - ./asterisk-etc/rtp.conf:/etc/asterisk/rtp.conf:ro
+      - ./asterisk-etc/modules.conf:/etc/asterisk/modules.conf:ro
+      # TLS сертификаты
+      - ./certs:/etc/asterisk/keys:ro
+      # База данных и логи
+      - asterisk-db:/var/lib/asterisk
+      - asterisk-logs:/var/log/asterisk
+      # Скрипты
+      - ./scripts:/usr/local/bin/gateway-scripts:ro
+    
+    environment:
+      - ASTERISK_UID=1000
+      - ASTERISK_GID=1000
+    
+    healthcheck:
+      test: ["CMD", "asterisk", "-rx", "core show version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Nginx (обратный прокси + certbot) ───────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: gsm-sip-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+      - certbot-webroot:/var/www/certbot
+    depends_on:
+      - asterisk
+
+  # ─── Certbot (автообновление Let's Encrypt) ──────────────────
+  certbot:
+    image: certbot/certbot
+    container_name: gsm-sip-certbot
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # ─── Мониторинг (опционально) ─────────────────────────────────
+  gateway-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.monitor
+    container_name: gsm-sip-monitor
+    restart: unless-stopped
+    volumes:
+      - asterisk-db:/var/lib/asterisk:ro
+      - ./scripts:/scripts:ro
+    environment:
+      - DB_PATH=/var/lib/asterisk/gateway_events.db
+      - CHECK_INTERVAL=10
+    depends_on:
+      - asterisk
+
+volumes:
+  asterisk-db:
+  asterisk-logs:
+  certbot-webroot:
+
+# ================================================================
+# Порты которые нужно открыть в файрволе:
+# TCP 5061  - SIP TLS (внешние подключения)
+# UDP 5060  - SIP UDP (внутренняя сеть)
+# UDP 10000-10100 - RTP (аудио)
+# TCP 80    - HTTP (для certbot)
+# TCP 443   - HTTPS (для веб-интерфейса)
+# ================================================================
