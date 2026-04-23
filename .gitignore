@@ -28,8 +28,10 @@ crash.log
 freeswitch-config/
 freeswitch-lxc/
 
-# Documentation (keep only README.md)
+# Documentation (keep only README.md and device setup guides)
 *.md
 !README.md
+!MI8_SETUP_RU.md
+!asterisk-config/README.md
 openvpn_configs
 wireguard/

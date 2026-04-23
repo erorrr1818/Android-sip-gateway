@@ -32,6 +32,7 @@ public class DeviceMuteManager {
     public static final String PRESET_REDMI_NOTE_7 = "redmi_note_7";      // SDM660
     public static final String PRESET_GENERIC = "generic";                // Generic SDM4xx
     public static final String PRESET_REDMI_4X = "redmi_4x";              // MSM8940 / SD435
+    public static final String PRESET_MI_8 = "mi_8";                      // SDM845 / Snapdragon 845
 
     // ============================================================
     // DEVICE PRESETS - Edit these for your device!
@@ -110,6 +111,51 @@ public class DeviceMuteManager {
                 "DEC4 MUX"
             }
         ));
+
+        // Xiaomi Mi 8 (Snapdragon 845 / SDM845) - LineageOS
+        // SD845 uses Tavil WCD9340 codec with 8 DECs
+        // Speaker: EAR_S and SPK_RX switches (Tavil codec)
+        // Mic: DEC1-8 with Volume and MUX controls
+        PRESETS.put(PRESET_MI_8, new DevicePreset(
+            "Xiaomi Mi 8 (SD845)",
+            new String[] {
+                // Earpiece / Speaker mute (ENUM -> ZERO)
+                // Tavil WCD9340: these control RX output routing
+                "EAR SPKR PA",
+                "ANC EAR PA",
+                "HPHL",
+                "HPHR",
+                "LINEOUT1",
+                "LINEOUT2",
+                "SPK1 LEFT PA",
+                "SPK1 RIGHT PA",
+                "SPK2 LEFT PA",
+                "SPK2 RIGHT PA"
+            },
+            new String[] {
+                // Microphone volume controls (INT -> 0)
+                // Tavil WCD9340 has 8 decimators
+                "DEC1 Volume",
+                "DEC2 Volume",
+                "DEC3 Volume",
+                "DEC4 Volume",
+                "DEC5 Volume",
+                "DEC6 Volume",
+                "DEC7 Volume",
+                "DEC8 Volume"
+            },
+            new String[] {
+                // Microphone routing controls (ENUM -> ZERO)
+                "DEC1 MUX",
+                "DEC2 MUX",
+                "DEC3 MUX",
+                "DEC4 MUX",
+                "DEC5 MUX",
+                "DEC6 MUX",
+                "DEC7 MUX",
+                "DEC8 MUX"
+            }
+        ));
     }
 
     // ============================================================
@@ -180,6 +226,7 @@ public class DeviceMuteManager {
         PRESET_REDMI_NOTE_7,
         PRESET_GENERIC,
         PRESET_REDMI_4X,
+        PRESET_MI_8,
         PRESET_CUSTOM
     };
 
