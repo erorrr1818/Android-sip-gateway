@@ -9,10 +9,13 @@
     <!-- Basic permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Telephony permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -20,6 +23,7 @@
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
     <!-- SMS permissions -->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -56,7 +60,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Required for ROLE_DIALER on Android 10+ -->
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -73,14 +76,12 @@
             android:name=".GatewayInCallService"
             android:permission="android.permission.BIND_INCALL_SERVICE"
             android:exported="true">
-            <!-- UI=true required for binding as default dialer -->
             <meta-data
                 android:name="android.telecom.IN_CALL_SERVICE_UI"
                 android:value="true" />
             <meta-data
                 android:name="android.telecom.IN_CALL_SERVICE_RINGING"
                 android:value="true" />
-            <!-- Allow binding for self-managed calls -->
             <meta-data
                 android:name="android.telecom.INCLUDE_SELF_MANAGED_CALLS"
                 android:value="true" />
@@ -95,7 +96,7 @@
             android:exported="false"
             android:foregroundServiceType="microphone|phoneCall" />
 
-        <!-- Battery limit service (controls charging via root) -->
+        <!-- Battery limit service -->
         <service
             android:name=".BatteryLimitService"
             android:exported="false"
@@ -110,19 +111,19 @@
             </intent-filter>
         </receiver>
 
-        <!-- Gateway control API receiver for external management -->
+        <!-- Gateway control API receiver -->
         <receiver
             android:name=".GatewayControlReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="org.onetwoone.gateway.START" />
-                <action android:name="org.onetwoone.gateway.STOP" />
-                <action android:name="org.onetwoone.gateway.CONFIGURE" />
-                <action android:name="org.onetwoone.gateway.GET_STATUS" />
+                <action android:name="com.dber88.sip.START" />
+                <action android:name="com.dber88.sip.STOP" />
+                <action android:name="com.dber88.sip.CONFIGURE" />
+                <action android:name="com.dber88.sip.GET_STATUS" />
             </intent-filter>
         </receiver>
 
-        <!-- Disable WorkManager auto-initialization (we do it manually with error handling) -->
+        <!-- Disable WorkManager auto-initialization -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

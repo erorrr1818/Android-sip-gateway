@@ -29,6 +29,7 @@ This app bridges GSM calls and SMS to VoIP (SIP), allowing:
 | Device | SoC | ROM | Status |
 |--------|-----|-----|--------|
 | Xiaomi Redmi Note 7 (lavender) | Snapdragon 660 | [LineageOS 17.1](https://xdaforums.com/t/rom-official-nightlies-lineageos-17-1.4109617/) | ✅ Working |
+| Xiaomi Mi 8 (dipper) | Snapdragon 845 | LineageOS 19.1+ | ✅ Preset added (WCD9340 codec) |
 
 ### Software
 - Android 8.1+ (LineageOS recommended)
@@ -88,6 +89,8 @@ See [BUILD.md](BUILD.md) for detailed build instructions, versioning, and signin
 2. **Android Studio** (or just Gradle + Android SDK)
 3. **Android NDK r21e** (for native code compilation)
 4. **Java JDK 11+**
+
+> 📖 **Xiaomi Mi 8 (dipper) setup guide (Russian):** see [MI8_SETUP_RU.md](MI8_SETUP_RU.md)
 
 ### Step 1: Clone the repository
 
@@ -203,6 +206,7 @@ The app needs to mute the device's speaker and microphone during bridged calls t
 |---------|--------------|----------|---------|
 | **Redmi Note 7** | RX1-7 Digital Mute | DEC1-8 Volume = 0 | Redmi Note 7, other SDM6xx |
 | **Generic** | RX1-3 Digital Mute | DEC1-4 Volume = 0 | Other SDM4xx/SDM6xx devices |
+| **Xiaomi Mi 8 (SD845)** | EAR/SPK/HPHL/HPHR PA | DEC1-8 Volume = 0 + DEC1-8 MUX | Mi 8 (dipper), other SDM845 devices |
 | **Custom** | User-defined controls | User-defined controls | Other Qualcomm devices |
 
 **Why hardware mute?**

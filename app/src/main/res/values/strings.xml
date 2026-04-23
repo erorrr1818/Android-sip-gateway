@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GSM-SIP Gateway</string>
-    <string name="select_capture">Select Capture Device (GSM→SIP)</string>
-    <string name="select_playback">Select Playback Device (SIP→GSM)</string>
-    <string name="select_mixer">Select Mixer Route</string>
+    <string name="app_name">dber88-sip</string>
+    <string name="select_capture">Capture Device (GSM→SIP)</string>
+    <string name="select_playback">Playback Device (SIP→GSM)</string>
+    <string name="select_mixer">Mixer Route</string>
+    <string name="brand_nick">dber88</string>
+    <string name="brand_subtitle">GSM · SIP · GATEWAY</string>
+    <string name="status_registered">● REGISTERED</string>
+    <string name="status_offline">○ OFFLINE</string>
 </resources>
