@@ -2,478 +2,797 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/bg_dark"
+    android:scrollbarStyle="outsideOverlay"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="GSM-SIP Gateway"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Status -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Status:"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/statusText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Not started"
-            android:background="#f0f0f0"
-            android:padding="8dp"
-            android:fontFamily="monospace"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Permissions Status -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Permissions (via root):"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/permissionsText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Checking..."
-            android:background="#f0f0f0"
-            android:padding="8dp"
-            android:fontFamily="monospace"
-            android:textSize="10sp"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- SIP Configuration -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SIP Configuration:"
-            android:textStyle="bold"/>
-
-        <EditText
-            android:id="@+id/sipServer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="SIP Server"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/sipPort"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="SIP Port"
-            android:inputType="number"/>
-
-        <EditText
-            android:id="@+id/sipUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="SIP Username"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/sipPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="SIP Password"
-            android:inputType="textPassword"/>
-
-        <CheckBox
-            android:id="@+id/useTls"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Use TLS (port 5061)"
-            android:layout_marginTop="4dp"/>
-
-        <EditText
-            android:id="@+id/sipRealm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="SIP Realm (empty = any)"
-            android:inputType="text"/>
-
-        <!-- Incoming GSM calls/SMS destination per SIM -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Incoming GSM → SIP routing:"
-            android:layout_marginTop="8dp"/>
-
+        <!-- ═══════ HEADER ═══════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingBottom="18dp">
 
-            <EditText
-                android:id="@+id/sim1Destination"
-                android:layout_width="0dp"
+            <!-- Brand nick -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="SIM1 → ext"
-                android:inputType="text"/>
+                android:text="dber88"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@color/brand_primary"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.15"/>
 
-            <EditText
-                android:id="@+id/sim2Destination"
-                android:layout_width="0dp"
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="SIM2 → ext"
-                android:inputType="text"
-                android:layout_marginStart="8dp"/>
+                android:text="GSM · SIP · GATEWAY"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:letterSpacing="0.20"
+                android:layout_marginTop="2dp"/>
+
+            <!-- Thin cyan divider -->
+            <View
+                android:layout_width="80dp"
+                android:layout_height="1dp"
+                android:background="@color/brand_primary"
+                android:layout_marginTop="12dp"
+                android:alpha="0.5"/>
         </LinearLayout>
 
-        <TextView
+        <!-- ═══════ STATUS CARD ═══════ -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Leave SIM2 empty if single-SIM phone"
-            android:textSize="11sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="12dp">
 
-        <!-- Incoming Call Mode -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Incoming call mode:"
-            android:layout_marginTop="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STATUS"
+                android:textColor="@color/brand_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15"
+                android:layout_marginBottom="8dp"/>
 
-        <RadioGroup
-            android:id="@+id/incomingModeRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-
-            <RadioButton
-                android:id="@+id/modeSipFirst"
+            <TextView
+                android:id="@+id/statusText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Start SIP → Answer GSM when connected (30s timeout)"
-                android:textSize="13sp"/>
+                android:text="INITIALIZING..."
+                android:background="@drawable/bg_status_off"
+                android:padding="10dp"
+                android:fontFamily="monospace"
+                android:textSize="13sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp"/>
 
-            <RadioButton
-                android:id="@+id/modeAnswerFirst"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PERMISSIONS"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/permissionsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Answer GSM → Start SIP (30s timeout)"
-                android:textSize="13sp"/>
-        </RadioGroup>
+                android:text="Checking..."
+                android:background="@drawable/bg_input"
+                android:padding="8dp"
+                android:fontFamily="monospace"
+                android:textSize="9sp"
+                android:textColor="@color/text_secondary"/>
 
-        <!-- Control Buttons -->
+        </LinearLayout>
+
+        <!-- ═══════ CONNECT BUTTONS ═══════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Save Settings"/>
+            android:layout_marginBottom="12dp">
 
             <Button
                 android:id="@+id/connectButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
                 android:layout_weight="1"
-                android:text="Connect"/>
+                android:text="▶  CONNECT"
+                android:background="@drawable/btn_primary"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:letterSpacing="0.08"
+                android:layout_marginEnd="6dp"/>
 
             <Button
                 android:id="@+id/disconnectButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
                 android:layout_weight="1"
-                android:text="Disconnect"/>
+                android:text="■  STOP"
+                android:background="@drawable/btn_danger"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:letterSpacing="0.08"/>
+
         </LinearLayout>
 
-        <!-- Battery Charge Limit -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Battery Charge Limit:"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Stop charging at specified level (requires root)"
-            android:textSize="11sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="4dp"/>
-
-        <RadioGroup
-            android:id="@+id/batteryLimitRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <RadioButton
-                android:id="@+id/limit60"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="60%"/>
-
-            <RadioButton
-                android:id="@+id/limit100"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="100% (no limit)"/>
-        </RadioGroup>
-
-        <!-- Audio Configuration -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Audio Configuration:"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Qualcomm: capture=VOC_REC, playback=Incall_Music"
-            android:textSize="11sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="4dp"/>
-
-        <!-- Sound Card -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sound Card:"/>
-
-        <Spinner
-            android:id="@+id/cardSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Capture Device -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Capture Device (GSM→SIP):"/>
-
-        <Spinner
-            android:id="@+id/captureSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            android:prompt="@string/select_capture"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Playback Device -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Playback Device (SIP→GSM):"/>
-
-        <Spinner
-            android:id="@+id/playbackSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            android:prompt="@string/select_playback"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Mixer Route -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mixer Route:"/>
-
-        <Spinner
-            android:id="@+id/mixerRouteSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            android:prompt="@string/select_mixer"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Audio Gain -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Audio Gain (dB):"
-            android:textStyle="bold"/>
-
+        <!-- ═══════ SIP CONFIG CARD ═══════ -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TX (GSM→SIP)"/>
-
-                <EditText
-                    android:id="@+id/txGainEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal|numberSigned"
-                    android:hint="-6"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="RX (SIP→GSM)"/>
-
-                <EditText
-                    android:id="@+id/rxGainEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal|numberSigned"
-                    android:hint="0"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Device Mute Preset -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Device Mute Preset:"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mutes speaker/mic on gateway during calls (enforced every 3s)"
-            android:textSize="11sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="4dp"/>
-
-        <Spinner
-            android:id="@+id/devicePresetSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Custom controls (visible only when Custom preset selected) -->
-        <LinearLayout
-            android:id="@+id/customMuteContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginBottom="8dp">
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="12dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIP CONFIGURATION"
+                android:textColor="@color/brand_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Server + Port row -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Detected mixer controls (tap to toggle):"
-                android:textSize="12sp"
-                android:textColor="#666666"
-                android:layout_marginBottom="4dp"/>
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/sipServer"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="2"
+                    android:hint="SIP Server / IP"
+                    android:inputType="textNoSuggestions"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="13sp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/sipPort"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="5060"
+                    android:inputType="number"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp"/>
+            </LinearLayout>
+
+            <!-- Username + Password row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/sipUser"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="Username"
+                    android:inputType="textNoSuggestions"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="13sp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/sipPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp"/>
+            </LinearLayout>
+
+            <!-- Realm -->
+            <EditText
+                android:id="@+id/sipRealm"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:hint="Realm (leave * for any)"
+                android:inputType="textNoSuggestions"
+                android:background="@drawable/bg_input"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"
+                android:padding="10dp"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- TLS toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <CheckBox
+                    android:id="@+id/useTls"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/brand_primary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Use TLS encryption (port 5061)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginStart="6dp"/>
+            </LinearLayout>
+
+            <!-- SIM routing -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GSM → SIP ROUTING"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="6dp"/>
 
             <LinearLayout
-                android:id="@+id/micMuteCheckboxContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/sim1Destination"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="SIM1 → ext (e.g. 101)"
+                    android:inputType="textNoSuggestions"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="6dp"/>
+
+                <EditText
+                    android:id="@+id/sim2Destination"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="SIM2 → ext (optional)"
+                    android:inputType="textNoSuggestions"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="12sp"/>
+            </LinearLayout>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Leave SIM2 empty for single-SIM device"
+                android:textColor="@color/text_hint"
+                android:textSize="10sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Incoming call mode -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="INCOMING CALL MODE"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="6dp"/>
+
+            <RadioGroup
+                android:id="@+id/incomingModeRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Manual controls (comma-separated, for controls not in list):"
-                android:textSize="12sp"
-                android:textColor="#666666"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp">
+
+                <RadioButton
+                    android:id="@+id/modeSipFirst"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SIP first → answer GSM when connected"
+                    android:textColor="@color/text_primary"
+                    android:buttonTint="@color/brand_primary"
+                    android:textSize="12sp"/>
+
+                <RadioButton
+                    android:id="@+id/modeAnswerFirst"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Answer GSM → connect SIP"
+                    android:textColor="@color/text_primary"
+                    android:buttonTint="@color/brand_primary"
+                    android:textSize="12sp"/>
+            </RadioGroup>
+
+            <!-- Save button -->
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:text="💾  SAVE SIP SETTINGS"
+                android:background="@drawable/btn_save"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:letterSpacing="0.05"/>
+
+        </LinearLayout>
+
+        <!-- ═══════ BATTERY CARD ═══════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BATTERY MANAGEMENT"
+                android:textColor="@color/brand_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15"
                 android:layout_marginBottom="4dp"/>
 
-            <EditText
-                android:id="@+id/manualMuteControls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="e.g. DEC1 Volume, EAR_S, ADC1 MUX"
-                android:inputType="text"
-                android:textSize="13sp"/>
-
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Use 'Volume' suffix for INT controls (→0), others are ENUM (→ZERO)"
+                android:text="Stop charging at specified level to preserve battery (requires root)"
+                android:textColor="@color/text_hint"
                 android:textSize="10sp"
-                android:textColor="#999999"/>
+                android:layout_marginBottom="8dp"/>
 
+            <RadioGroup
+                android:id="@+id/batteryLimitRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/limit60"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="60% (recommended)"
+                    android:textColor="@color/text_primary"
+                    android:buttonTint="@color/brand_green"
+                    android:textSize="12sp"/>
+
+                <RadioButton
+                    android:id="@+id/limit100"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="100% (no limit)"
+                    android:textColor="@color/text_primary"
+                    android:buttonTint="@color/brand_yellow"
+                    android:textSize="12sp"/>
+            </RadioGroup>
         </LinearLayout>
 
-        <!-- Save / Restart buttons at bottom -->
+        <!-- ═══════ AUDIO CONFIG CARD ═══════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp">
-
-            <Button
-                android:id="@+id/saveAudioButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Save Audio"/>
-
-            <Button
-                android:id="@+id/restartButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Restart"/>
-        </LinearLayout>
-
-        <!-- Web Interface Toggle -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-
-            <Switch
-                android:id="@+id/webInterfaceSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="12dp">
 
             <TextView
-                android:id="@+id/webInterfaceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Web Interface (port 8080)"
-                android:layout_marginStart="8dp"/>
+                android:text="AUDIO CONFIGURATION"
+                android:textColor="@color/brand_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Qualcomm: capture=VOC_REC_DL, playback=Incall_Music"
+                android:textColor="@color/text_hint"
+                android:textSize="10sp"
+                android:fontFamily="monospace"
+                android:layout_marginBottom="10dp"/>
+
+            <!-- Sound Card -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SOUND CARD"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.10"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/cardSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="10dp"
+                android:spinnerMode="dialog"
+                android:layout_marginBottom="10dp"/>
+
+            <!-- Capture Device -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CAPTURE DEVICE (GSM→SIP)"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.10"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/captureSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="10dp"
+                android:spinnerMode="dialog"
+                android:prompt="@string/select_capture"
+                android:layout_marginBottom="10dp"/>
+
+            <!-- Playback Device -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PLAYBACK DEVICE (SIP→GSM)"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.10"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/playbackSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="10dp"
+                android:spinnerMode="dialog"
+                android:prompt="@string/select_playback"
+                android:layout_marginBottom="10dp"/>
+
+            <!-- Mixer Route -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MIXER ROUTE"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.10"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/mixerRouteSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="10dp"
+                android:spinnerMode="dialog"
+                android:prompt="@string/select_mixer"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Audio Gain row -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AUDIO GAIN (dB)"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.10"
+                android:layout_marginBottom="6dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TX  GSM→SIP"
+                        android:textColor="@color/text_hint"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:layout_marginBottom="2dp"/>
+
+                    <EditText
+                        android:id="@+id/txGainEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:inputType="numberDecimal|numberSigned"
+                        android:hint="0"
+                        android:background="@drawable/bg_input"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_hint"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:fontFamily="monospace"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RX  SIP→GSM"
+                        android:textColor="@color/text_hint"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:layout_marginBottom="2dp"/>
+
+                    <EditText
+                        android:id="@+id/rxGainEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:inputType="numberDecimal|numberSigned"
+                        android:hint="0"
+                        android:background="@drawable/bg_input"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_hint"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:fontFamily="monospace"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Device Mute Preset -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DEVICE MUTE PRESET"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:letterSpacing="0.10"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mutes speaker/mic on gateway during calls (enforced every 3s)"
+                android:textColor="@color/text_hint"
+                android:textSize="10sp"
+                android:layout_marginBottom="6dp"/>
+
+            <Spinner
+                android:id="@+id/devicePresetSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="10dp"
+                android:spinnerMode="dropdown"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Custom mute controls (hidden by default) -->
+            <LinearLayout
+                android:id="@+id/customMuteContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DETECTED MIXER CONTROLS"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.10"
+                    android:layout_marginBottom="6dp"/>
+
+                <LinearLayout
+                    android:id="@+id/micMuteCheckboxContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="MANUAL CONTROLS (comma-separated)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.10"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="4dp"/>
+
+                <EditText
+                    android:id="@+id/manualMuteControls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. DEC1 Volume, EAR_S, ADC1 MUX"
+                    android:inputType="text"
+                    android:background="@drawable/bg_input"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:fontFamily="monospace"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="'Volume' → INT→0   Others → ENUM→ZERO"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_hint"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <!-- Audio Save + Restart -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <Button
+                    android:id="@+id/saveAudioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="2"
+                    android:text="💾  SAVE AUDIO"
+                    android:background="@drawable/btn_save"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="6dp"/>
+
+                <Button
+                    android:id="@+id/restartButton"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:text="↺ RESTART"
+                    android:background="@drawable/btn_ghost"
+                    android:textColor="@color/brand_primary"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ═══════ WEB INTERFACE CARD ═══════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_accent"
+            android:padding="14dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WEB INTERFACE"
+                android:textColor="@color/brand_accent"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <Switch
+                    android:id="@+id/webInterfaceSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumbTint="@color/brand_accent"
+                    android:trackTint="@color/bg_card2"/>
+
+                <TextView
+                    android:id="@+id/webInterfaceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Open browser config on port 8080"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginStart="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ═══════ FOOTER ═══════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="4dp">
+
+            <View
+                android:layout_width="80dp"
+                android:layout_height="1dp"
+                android:background="@color/brand_primary"
+                android:alpha="0.2"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dber88-sip  ·  Snapdragon 845 Ready"
+                android:textColor="@color/text_hint"
+                android:textSize="10sp"
+                android:fontFamily="monospace"/>
         </LinearLayout>
 
     </LinearLayout>
